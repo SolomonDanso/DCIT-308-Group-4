@@ -1,40 +1,90 @@
 package com.raven.form;
 
 import com.raven.model.Model_Card;
-import com.raven.model.StatusType;
+import com.raven.model.Drug;
+import com.raven.model.DrugManager;
 import com.raven.swing.ScrollBar;
-import java.awt.Color;
+import java.awt.*;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableCellEditor;
+import javax.swing.AbstractCellEditor;
+import javax.swing.JTable;
 
 public class Form_Home extends javax.swing.JPanel {
+    private DrugManager drugManager;
 
     public Form_Home() {
         initComponents();
+        drugManager = new DrugManager();
+        initializeDrugs();
+        updateTable();
+        
+        // Additional UI initializations
         card1.setData(new Model_Card(new ImageIcon(getClass().getResource("/com/raven/icon/stock.png")), "Total Drugs", "48", "Increased by 60%"));
         card2.setData(new Model_Card(new ImageIcon(getClass().getResource("/com/raven/icon/profit.png")), "Total Profit", "GHC 15,000", "Year to Date"));
         card3.setData(new Model_Card(new ImageIcon(getClass().getResource("/com/raven/icon/flag.png")), "Unique Customers", "520", "Increased by 70%"));
         card4.setData(new Model_Card(new ImageIcon(getClass().getResource("/com/raven/icon/stock.png")), "Suppliers", "600", "Active Suppliers"));
-
        
-        //  add row table
         spTable.setVerticalScrollBar(new ScrollBar());
         spTable.getVerticalScrollBar().setBackground(Color.WHITE);
         spTable.getViewport().setBackground(Color.WHITE);
         JPanel p = new JPanel();
         p.setBackground(Color.WHITE);
         spTable.setCorner(JScrollPane.UPPER_RIGHT_CORNER, p);
-        table.addRow(new Object[]{"87564", "Paracetamol", 48.45, 59, "Ernest Chemist Limited", "25th June, 2024"});
-        table.addRow(new Object[]{"87564", "Paracetamol", 48.45, 59, "Ernest Chemist", "25th June, 2024"});
-        table.addRow(new Object[]{"87564", "Paracetamol", 48.45, 59, "Ernest Chemist", "25th June, 2024"});
-        table.addRow(new Object[]{"87564", "Paracetamol", 48.45, 59, "Ernest Chemist", "25th June, 2024"});
-        table.addRow(new Object[]{"87564", "Paracetamol", 48.45, 59, "Ernest Chemist", "25th June, 2024"});
-        table.addRow(new Object[]{"87564", "Paracetamol", 48.45, 59, "Ernest Chemist", "25th June, 2024"});
-          
+    }
+
+    private void initializeDrugs() {
+        drugManager.addDrug(new Drug("87564", "Paracetamol", 48.45, 59, "Ernest Chemist Limited", "25th June, 2024"));
+        drugManager.addDrug(new Drug("87565", "Ibuprofen", 20.30, 100, "Danadams", "26th June, 2024"));
+        // Add more initial drugs if necessary
+    }
+
+    private void updateTable() {
+        DefaultTableModel model = (DefaultTableModel) table.getModel();
+        model.setRowCount(0); // Clear existing rows
         
-        //table.addRow(new Object[]{"Mike Hussy", "mikehussy@gmail.com", "Admin", "25 Apr,2018", StatusType.REJECT});
-        
+        for (Drug drug : drugManager.getAllDrugs().values()) {
+            JButton deleteButton = new JButton("Delete");
+            deleteButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    deleteDrug(drug.getCode());
+                }
+            });
+            model.addRow(new Object[]{drug.getCode(), drug.getName(), drug.getPrice(), drug.getQuantity(), drug.getSupplier(), drug.getDateAdded(), deleteButton});
+        }
+    }
+
+    public void addDrug(Drug drug) {
+        drugManager.addDrug(drug);
+        updateTable();
+    }
+
+    public void viewDrug(String code) {
+        Drug drug = drugManager.getDrug(code);
+        if (drug != null) {
+            // Display drug details in the UI
+            // You can add a new method to show details in a dialog or another panel
+        } else {
+            // Show message that drug is not found
+        }
+    }
+
+    public void updateDrug(Drug drug) {
+        drugManager.updateDrug(drug);
+        updateTable();
+    }
+
+    public void deleteDrug(String code) {
+        drugManager.removeDrug(code);
+        updateTable();
     }
 
     @SuppressWarnings("unchecked")
@@ -82,17 +132,22 @@ public class Form_Home extends javax.swing.JPanel {
 
             },
             new String [] {
-                "Code", "Name", "Price", "Quantity", "Supplier","Date Added"
+                "Code", "Name", "Price", "Quantity", "Supplier", "Date Added", "Action"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false
+                false, false, false, false, false, false, true
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
+
+        // Set custom renderer and editor for the "Action" column
+        table.getColumn("Action").setCellRenderer(new ButtonRenderer());
+        table.getColumn("Action").setCellEditor(new ButtonEditor());
+
         spTable.setViewportView(table);
 
         javax.swing.GroupLayout panelBorder1Layout = new javax.swing.GroupLayout(panelBorder1);
@@ -105,7 +160,7 @@ public class Form_Home extends javax.swing.JPanel {
                     .addGroup(panelBorder1Layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(spTable))
+                    .addComponent(spTable, javax.swing.GroupLayout.DEFAULT_SIZE, 835, Short.MAX_VALUE))
                 .addContainerGap())
         );
         panelBorder1Layout.setVerticalGroup(
@@ -140,6 +195,51 @@ public class Form_Home extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    // Custom button renderer class
+    class ButtonRenderer extends JButton implements TableCellRenderer {
+
+        public ButtonRenderer() {
+            setOpaque(true);
+            setText("Delete");
+        }
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value,
+                boolean isSelected, boolean hasFocus, int row, int column) {
+            return this;
+        }
+    }
+
+    // Custom button editor class
+    class ButtonEditor extends AbstractCellEditor implements TableCellEditor {
+
+        private JButton button;
+        private String drugCode;
+
+        public ButtonEditor() {
+            button = new JButton("Delete");
+            button.setOpaque(true);
+            button.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    fireEditingStopped();
+                    deleteDrug(drugCode);
+                }
+            });
+        }
+
+        @Override
+        public Component getTableCellEditorComponent(JTable table, Object value,
+                boolean isSelected, int row, int column) {
+            drugCode = table.getValueAt(row, 0).toString();
+            return button;
+        }
+
+        @Override
+        public Object getCellEditorValue() {
+            return button.getText();
+        }
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.raven.component.Card card1;

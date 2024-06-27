@@ -5,6 +5,7 @@ import com.raven.form.Form_1;
 import com.raven.form.Form_2;
 import com.raven.form.Form_3;
 import com.raven.form.Form_Home;
+import com.raven.form.SalesForm;
 import com.raven.form.SupplierForm;
 
 import javax.swing.JComponent;
@@ -23,6 +24,7 @@ public class Main extends javax.swing.JFrame {
     private Form_2 form2;
     private Form_3 form3;
     private SupplierForm supplierForm;
+    private SalesForm salesForm;
 
     public Main() {
         // Set the frame to undecorated before making it visible
@@ -35,6 +37,8 @@ public class Main extends javax.swing.JFrame {
         form2 = new Form_2();
         form3 = new Form_3();
         supplierForm = new SupplierForm();
+        salesForm = new SalesForm();
+
         menu.initMoving(Main.this);
         menu.addEventMenuSelected(new EventMenuSelected() {
             @Override
@@ -46,7 +50,7 @@ public class Main extends javax.swing.JFrame {
                 } else if (index == 2) {
                     setForm(supplierForm);
                 } else if (index == 3) {
-                    setForm(form3);
+                    setForm(salesForm);
                 }
             }
         });
