@@ -152,22 +152,9 @@ public class AddDrugForm extends javax.swing.JPanel {
         gbcPanel.gridy = 5;
         panelForm.add(txtSupplier, gbcPanel);
 
-        lblDateAdded.setText("Date Added:");
-        gbcPanel = new java.awt.GridBagConstraints();
-        gbcPanel.insets = new java.awt.Insets(10, 10, 10, 10);
-        gbcPanel.gridx = 0;
-        gbcPanel.gridy = 6;
-        gbcPanel.anchor = java.awt.GridBagConstraints.WEST;
-        panelForm.add(lblDateAdded, gbcPanel);
+        
 
-        txtDateAdded.setColumns(20);
-        gbcPanel = new java.awt.GridBagConstraints();
-        gbcPanel.insets = new java.awt.Insets(10, 10, 10, 10);
-        gbcPanel.gridx = 1;
-        gbcPanel.gridy = 6;
-        panelForm.add(txtDateAdded, gbcPanel);
-
-        btnSave.setText("Save");
+        btnSave.setText("Add Drug");
         btnSave.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnSaveActionPerformed(evt);

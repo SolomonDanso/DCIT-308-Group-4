@@ -12,6 +12,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Map;
+
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableCellEditor;
@@ -23,12 +25,13 @@ public class Form_Home extends javax.swing.JPanel {
     private DrugManager drugManager;
     private JTextField searchField;
     private JButton searchButton;
+    private JButton reloadButton;
     private JPanel searchPanel;
 
     public Form_Home() {
         initComponents();
         drugManager = new DrugManager();
-        initializeDrugs();
+        //initializeDrugs();
         updateTable();
        // initSearch();
 
@@ -48,17 +51,21 @@ public class Form_Home extends javax.swing.JPanel {
        
     }
 
-    private void initializeDrugs() {
-        drugManager.addDrug(new Drug("87564", "Paracetamol", 48.45, 59, "Ernest Chemist Limited", "25th June, 2024"));
-        drugManager.addDrug(new Drug("87565", "Ibuprofen", 20.30, 100, "Danadams", "26th June, 2024"));
-        // Add more initial drugs if necessary
-    }
+    // private void initializeDrugs() {
+    //     drugManager.addDrug(new Drug("87564", "Paracetamol", 48.45, 59, "Ernest Chemist Limited", "25th June, 2024"));
+    //     drugManager.addDrug(new Drug("87565", "Ibuprofen", 20.30, 100, "Danadams", "26th June, 2024"));
+    //     // Add more initial drugs if necessary
+    // }
 
     private void updateTable() {
         DefaultTableModel model = (DefaultTableModel) table.getModel();
         model.setRowCount(0); // Clear existing rows
-
-        for (Drug drug : drugManager.getAllDrugs().values()) {
+    
+        // Fetch drugs from the database using getAllDrugs() from DatabaseHelper
+        Map<String, Drug> drugs = DatabaseHelper.getAllDrugs();
+    
+        // Iterate over the drugs and add rows to the table model
+        for (Drug drug : drugs.values()) {
             JButton deleteButton = new JButton("Delete");
             deleteButton.addActionListener(new ActionListener() {
                 @Override
@@ -66,22 +73,28 @@ public class Form_Home extends javax.swing.JPanel {
                     deleteDrug(drug.getCode());
                 }
             });
+            // Add a row to the table model
             model.addRow(new Object[]{drug.getCode(), drug.getName(), drug.getPrice(), drug.getQuantity(), drug.getSupplier(), drug.getDateAdded(), deleteButton});
         }
     }
+    
 
-      private void searchDrug(String searchTerm) {
+    private void searchDrug(String searchTerm) {
         System.out.println("Search Term: " + searchTerm); // Print searchTerm for debugging
         DefaultTableModel model = (DefaultTableModel) table.getModel();
         model.setRowCount(0); // Clear existing rows
-    
+        
+        Map<String, Drug> drugs = DatabaseHelper.getAllDrugs();
         boolean found = false;
-        for (Drug drug : drugManager.getAllDrugs().values()) {
+        
+        for (Map.Entry<String, Drug> entry : drugs.entrySet()) {
+            Drug drug = entry.getValue();
+            
             if (containsIgnoreCase(drug.getName(), searchTerm) || containsIgnoreCase(drug.getCode(), searchTerm) ||
-                    containsIgnoreCase(drug.getSupplier(), searchTerm) || containsIgnoreCase(drug.getDateAdded(), searchTerm) ||
-                    containsDouble(drug.getPrice(), searchTerm) || containsInteger(drug.getQuantity(), searchTerm)) {
+                containsIgnoreCase(drug.getSupplier(), searchTerm) || containsIgnoreCase(drug.getDateAdded(), searchTerm) ||
+                containsDouble(drug.getPrice(), searchTerm) || containsInteger(drug.getQuantity(), searchTerm)) {
                 
-                        JButton deleteButton = new JButton("Delete");
+                JButton deleteButton = new JButton("Delete");
                 deleteButton.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
@@ -89,18 +102,18 @@ public class Form_Home extends javax.swing.JPanel {
                         System.out.println("Delete button clicked for drug code: " + drug.getCode()); // Print delete button clicked event
                     }
                 });
+                
                 model.addRow(new Object[]{drug.getCode(), drug.getName(), drug.getPrice(), drug.getQuantity(), drug.getSupplier(), drug.getDateAdded(), deleteButton});
                 found = true;
             }
         }
-    
+        
         if (!found) {
             JOptionPane.showMessageDialog(this, "No drugs found matching the search criteria.", "Search Results", JOptionPane.INFORMATION_MESSAGE);
             updateTable();
         }
     }
-    
-    private boolean containsIgnoreCase(String source, String searchTerm) {
+        private boolean containsIgnoreCase(String source, String searchTerm) {
         return source.toLowerCase().contains(searchTerm.toLowerCase());
     }
     
@@ -124,35 +137,28 @@ public class Form_Home extends javax.swing.JPanel {
     
     
 
-    public void addDrug(Drug drug) {
-        drugManager.addDrug(drug);
-        updateTable();
-    }
-
-    public void viewDrug(String code) {
-        Drug drug = drugManager.getDrug(code);
-        if (drug != null) {
-            // Display drug details in the UI
-            // You can add a new method to show details in a dialog or another panel
-        } else {
-            // Show message that drug is not found
-        }
-    }
-
-    public void updateDrug(Drug drug) {
-        drugManager.updateDrug(drug);
-        updateTable();
-    }
 
     public void deleteDrug(String code) {
-        drugManager.removeDrug(code);
-        updateTable();
+        // Step 1: Get all drugs from DatabaseHelper and queue the deletion
+        Map<String, Drug> drugs = DatabaseHelper.getAllDrugs();
+        Drug drugToDelete = drugs.get(code);
+
+        // Step 2: Use a queue to remove it from the drugs list
+        if (drugToDelete != null) {
+            drugs.remove(code);
+
+            // Step 3: Send it to DatabaseHelper to remove the drug from the database
+            DatabaseHelper.deleteDrug(code);
+        }
+
+        updateTable(); // Refresh the UI
     }
 
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-
+        
         panel = new javax.swing.JLayeredPane();
         card1 = new com.raven.component.Card();
         card2 = new com.raven.component.Card();
@@ -227,8 +233,15 @@ public class Form_Home extends javax.swing.JPanel {
                 }
             }
         });
+        reloadButton = new JButton("reload");
+        reloadButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+               updateTable();
+            }
+        });
         searchPanel.add(searchField);
         searchPanel.add(searchButton);
+        searchPanel.add(reloadButton);
 
         javax.swing.GroupLayout panelBorder1Layout = new javax.swing.GroupLayout(panelBorder1);
         panelBorder1.setLayout(panelBorder1Layout);
