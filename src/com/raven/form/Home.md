@@ -30,7 +30,6 @@ public class Form_Home extends javax.swing.JPanel {
         drugManager = new DrugManager();
         initializeDrugs();
         updateTable();
-       // initSearch();
 
         // Additional UI initializations
         card1.setData(new Model_Card(new ImageIcon(getClass().getResource("/com/raven/icon/stock.png")), "Total Drugs", "48", "Increased by 60%"));
@@ -45,7 +44,19 @@ public class Form_Home extends javax.swing.JPanel {
         p.setBackground(Color.WHITE);
         spTable.setCorner(JScrollPane.UPPER_RIGHT_CORNER, p);
 
-       
+        // Initialize and add search field and button
+        searchField = new JTextField(20);
+        searchButton = new JButton("Search");
+        searchButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                searchDrug();
+            }
+        });
+        searchPanel = new JPanel();
+        searchPanel.add(searchField);
+        searchPanel.add(searchButton);
+        panelBorder1.add(searchPanel, BorderLayout.NORTH);
     }
 
     private void initializeDrugs() {
@@ -70,40 +81,24 @@ public class Form_Home extends javax.swing.JPanel {
         }
     }
 
-    // private void initSearch() {
-    //     searchButton.addActionListener(new ActionListener() {
-    //         @Override
-    //         public void actionPerformed(ActionEvent e) {
-    //             String text = searchField.getText();
-    //             System.out.println(text);
-    //             if (text.trim().length() == 0) {
-    //                // rowSorter.setRowFilter(null);
-    //             } else {
-    //                 searchBySupplierName(text.trim());
-    //             }
-    //         }
-    //     });
-    // }
+    private void searchBySupplierName(String supplierName) {
+        DefaultTableModel model = (DefaultTableModel) table.getModel();
+        boolean found = false;
+        for (int i = 0; i < model.getRowCount(); i++) {
+            String name = (String) model.getValueAt(i, 2);  // Assuming the supplier name is in the 5th column
+            if (name.equalsIgnoreCase(supplierName)) {
+                table.setRowSelectionInterval(i, i);
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            JOptionPane.showMessageDialog(this, "Supplier not found!");
+        }
+    }
 
-    // // Linear search algorithm
-    // private void searchBySupplierName(String supplierName) {
-    //     DefaultTableModel model = (DefaultTableModel) table.getModel();
-    //     boolean found = false;
-    //     for (int i = 0; i < model.getRowCount(); i++) {
-    //         String name = (String) model.getValueAt(i, 2);  // Assuming the supplier name is in the 5th column
-    //         if (name.equalsIgnoreCase(supplierName)) {
-    //             table.setRowSelectionInterval(i, i);
-    //             found = true;
-    //             break;
-    //         }
-    //     }
-    //     if (!found) {
-    //         JOptionPane.showMessageDialog(this, "Supplier not found!");
-    //     }
-    // }
-
-    private void searchDrug(String searchTerm) {
-        //String searchTerm = searchField.getText();
+    private void searchDrug() {
+        String searchTerm = searchField.getText();
         System.out.println("Search Term: " + searchTerm); // Print searchTerm for debugging
         DefaultTableModel model = (DefaultTableModel) table.getModel();
         model.setRowCount(0); // Clear existing rows
@@ -221,17 +216,12 @@ public class Form_Home extends javax.swing.JPanel {
 
         // Initialize search panel
         searchPanel = new JPanel();
-          searchField = new javax.swing.JTextField(20);
+        searchField = new javax.swing.JTextField();
         searchButton = new JButton("Search");
         searchButton.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
-                String text = searchField.getText();
-                System.out.println(text);
-                if (text.trim().length() == 0) {
-                   // rowSorter.setRowFilter(null);
-                } else {
-                    searchDrug(text.trim());
-                }
+                searchDrug();
             }
         });
         searchPanel.add(searchField);
