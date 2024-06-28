@@ -70,49 +70,18 @@ public class Form_Home extends javax.swing.JPanel {
         }
     }
 
-    // private void initSearch() {
-    //     searchButton.addActionListener(new ActionListener() {
-    //         @Override
-    //         public void actionPerformed(ActionEvent e) {
-    //             String text = searchField.getText();
-    //             System.out.println(text);
-    //             if (text.trim().length() == 0) {
-    //                // rowSorter.setRowFilter(null);
-    //             } else {
-    //                 searchBySupplierName(text.trim());
-    //             }
-    //         }
-    //     });
-    // }
-
-    // // Linear search algorithm
-    // private void searchBySupplierName(String supplierName) {
-    //     DefaultTableModel model = (DefaultTableModel) table.getModel();
-    //     boolean found = false;
-    //     for (int i = 0; i < model.getRowCount(); i++) {
-    //         String name = (String) model.getValueAt(i, 2);  // Assuming the supplier name is in the 5th column
-    //         if (name.equalsIgnoreCase(supplierName)) {
-    //             table.setRowSelectionInterval(i, i);
-    //             found = true;
-    //             break;
-    //         }
-    //     }
-    //     if (!found) {
-    //         JOptionPane.showMessageDialog(this, "Supplier not found!");
-    //     }
-    // }
-
-    private void searchDrug(String searchTerm) {
-        //String searchTerm = searchField.getText();
+      private void searchDrug(String searchTerm) {
         System.out.println("Search Term: " + searchTerm); // Print searchTerm for debugging
         DefaultTableModel model = (DefaultTableModel) table.getModel();
         model.setRowCount(0); // Clear existing rows
     
         boolean found = false;
         for (Drug drug : drugManager.getAllDrugs().values()) {
-            if (drug.getName().toLowerCase().contains(searchTerm) || drug.getCode().toLowerCase().contains(searchTerm) ||
-                    drug.getSupplier().toLowerCase().contains(searchTerm)) {
-                JButton deleteButton = new JButton("Delete");
+            if (containsIgnoreCase(drug.getName(), searchTerm) || containsIgnoreCase(drug.getCode(), searchTerm) ||
+                    containsIgnoreCase(drug.getSupplier(), searchTerm) || containsIgnoreCase(drug.getDateAdded(), searchTerm) ||
+                    containsDouble(drug.getPrice(), searchTerm) || containsInteger(drug.getQuantity(), searchTerm)) {
+                
+                        JButton deleteButton = new JButton("Delete");
                 deleteButton.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
@@ -127,8 +96,32 @@ public class Form_Home extends javax.swing.JPanel {
     
         if (!found) {
             JOptionPane.showMessageDialog(this, "No drugs found matching the search criteria.", "Search Results", JOptionPane.INFORMATION_MESSAGE);
+            updateTable();
         }
     }
+    
+    private boolean containsIgnoreCase(String source, String searchTerm) {
+        return source.toLowerCase().contains(searchTerm.toLowerCase());
+    }
+    
+    private boolean containsDouble(double value, String searchTerm) {
+        try {
+            double searchValue = Double.parseDouble(searchTerm);
+            return value == searchValue;
+        } catch (NumberFormatException e) {
+            return false; // If parsing fails, searchTerm is not a valid double
+        }
+    }
+    
+    private boolean containsInteger(int value, String searchTerm) {
+        try {
+            int searchValue = Integer.parseInt(searchTerm);
+            return value == searchValue;
+        } catch (NumberFormatException e) {
+            return false; // If parsing fails, searchTerm is not a valid integer
+        }
+    }
+    
     
 
     public void addDrug(Drug drug) {
@@ -221,7 +214,7 @@ public class Form_Home extends javax.swing.JPanel {
 
         // Initialize search panel
         searchPanel = new JPanel();
-          searchField = new javax.swing.JTextField(20);
+          searchField = new javax.swing.JTextField(40);
         searchButton = new JButton("Search");
         searchButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
