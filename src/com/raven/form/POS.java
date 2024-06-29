@@ -12,20 +12,21 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-
+import java.sql.Timestamp;
 import com.raven.model.Drug;
+import com.raven.model.Sales;
 import com.raven.swing.PanelBorder;
 
-public class AddDrugForm extends javax.swing.JPanel {
+public class POS extends javax.swing.JPanel {
 
-    private Queue<Drug> drugQueue;
+    private Queue<Sales> drugQueue;
     private PanelBorder panelBorder1;
     private JPanel panelForm;
     private JLabel jLabel1, lblCode, lblName, lblPrice, lblQuantity, lblSupplier, lblLocation;
     private JTextField txtCode, txtName, txtPrice, txtQuantity, txtSupplier, txtLocation;
     private JButton btnSave;
 
-    public AddDrugForm() {
+    public POS() {
         initComponents();
         drugQueue = new LinkedList<>(); // Initialize drugQueue
 
@@ -49,9 +50,7 @@ public class AddDrugForm extends javax.swing.JPanel {
         lblSupplier = new javax.swing.JLabel();
         txtSupplier = new javax.swing.JTextField();
 
-        lblLocation = new javax.swing.JLabel();
-        txtLocation = new javax.swing.JTextField();
-       
+              
         btnSave = new javax.swing.JButton();
 
         setLayout(new java.awt.GridBagLayout());
@@ -70,7 +69,7 @@ public class AddDrugForm extends javax.swing.JPanel {
 
         jLabel1.setFont(new java.awt.Font("sansserif", 1, 18)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(127, 127, 127));
-        jLabel1.setText("Add New Drug");
+        jLabel1.setText("Purchase Drug");
         java.awt.GridBagConstraints gbcPanel = new java.awt.GridBagConstraints();
         gbcPanel.insets = new java.awt.Insets(10, 10, 10, 10);
         gbcPanel.gridx = 0;
@@ -139,7 +138,7 @@ public class AddDrugForm extends javax.swing.JPanel {
         gbcPanel.gridy = 4;
         panelForm.add(txtQuantity, gbcPanel);
 
-        lblSupplier.setText("Supplier:");
+        lblSupplier.setText("Customer:");
         gbcPanel = new java.awt.GridBagConstraints();
         gbcPanel.insets = new java.awt.Insets(10, 10, 10, 10);
         gbcPanel.gridx = 0;
@@ -154,34 +153,15 @@ public class AddDrugForm extends javax.swing.JPanel {
         gbcPanel.gridy = 5;
         panelForm.add(txtSupplier, gbcPanel);
 
-        lblLocation.setText("Location:");
-        gbcPanel = new java.awt.GridBagConstraints();
-        gbcPanel.insets = new java.awt.Insets(10, 10, 10, 10);
-        gbcPanel.gridx = 0;
-        gbcPanel.gridy = 6;
-        gbcPanel.anchor = java.awt.GridBagConstraints.WEST;
-        panelForm.add(lblLocation, gbcPanel);
-
-        txtLocation.setColumns(20);
-        gbcPanel = new java.awt.GridBagConstraints();
-        gbcPanel.insets = new java.awt.Insets(10, 10, 10, 10);
-        gbcPanel.gridx = 1;
-        gbcPanel.gridy = 6;
-        panelForm.add(txtLocation, gbcPanel);
-
+        
         
 
-        btnSave.setText("Add Drug");
-
-        //When a user click on the Add Drug Button 
-
+        btnSave.setText("Purchase");
         btnSave.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnSaveActionPerformed(evt);
             }
         });
-
-
         gbcPanel = new java.awt.GridBagConstraints();
         gbcPanel.insets = new java.awt.Insets(10, 10, 10, 10);
         gbcPanel.gridx = 1;
@@ -205,52 +185,39 @@ public class AddDrugForm extends javax.swing.JPanel {
         String priceStr = txtPrice.getText();
         String quantityStr = txtQuantity.getText();
         String supplier = txtSupplier.getText();
-        String dateAdded = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
-        String location = txtLocation.getText();
+        Timestamp dateAdded = new Timestamp(System.currentTimeMillis());
         // Validate input
-        if (
-        priceStr.isEmpty() ||
-        code.isEmpty() ||
-         quantityStr.isEmpty()||
-         name.isEmpty() ||
-         supplier.isEmpty() ||
-         location.isEmpty()
-         
-         ) {
-            JOptionPane.showMessageDialog(this, "All fields are required and cannot be empty!");
-            return; 
+        if (priceStr.isEmpty() || quantityStr.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Price and Quantity cannot be empty!");
+            return;
         }
-
     
         double price;
         int quantity;
+        double amount;
+      
     
         try {
             price = Double.parseDouble(priceStr);
             quantity = Integer.parseInt(quantityStr);
+            amount = price*quantity;
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this, "Invalid input for Price or Quantity!");
             return;
         }
     
         // Create a Drug object and add to queue
-
-        //Queue is a list drugQueue =>  [                           paracetamol_details ]
-
-
-
-        Drug drug = new Drug(code, name, price, quantity, supplier, dateAdded,location);
-        
+        Sales drug = new Sales(code, name, price, quantity, supplier, dateAdded,amount);
         drugQueue.add(drug);
     
         // Process the queue
         while (!drugQueue.isEmpty()) {
-            Drug d = drugQueue.poll();
-            DatabaseHelper.insertDrug(d.getCode(), d.getName(), d.getPrice(), d.getQuantity(), d.getSupplier(), d.getDateAdded(), d.getLocation());
+            Sales d = drugQueue.poll();
+            DatabaseHelper.insertSales(d.getCode(), d.getName(), d.getPrice(), d.getQuantity(), d.getSupplier(), d.getDateAdded(), amount);
         }
     
         // Notify the user
-        JOptionPane.showMessageDialog(this, "Drug added successfully!");
+        JOptionPane.showMessageDialog(this, "Purchased successfully!");
     }
     
 

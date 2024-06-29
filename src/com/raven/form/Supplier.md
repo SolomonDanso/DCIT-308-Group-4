@@ -28,13 +28,6 @@ public class SupplierForm extends javax.swing.JPanel {
     }
 
     private void updateTable() {
-        spTable.setVerticalScrollBar(new ScrollBar());
-        spTable.getVerticalScrollBar().setBackground(Color.WHITE);
-        spTable.getViewport().setBackground(Color.WHITE);
-        JPanel p = new JPanel();
-        p.setBackground(Color.WHITE);
-        spTable.setCorner(JScrollPane.UPPER_RIGHT_CORNER, p);
-
         DefaultTableModel model = (DefaultTableModel) table.getModel();
         model.setRowCount(0); // Clear existing rows
 
@@ -60,7 +53,7 @@ public class SupplierForm extends javax.swing.JPanel {
             Drug drug = entry.getValue();
 
             if (containsIgnoreCase(drug.getName(), searchTerm) || containsIgnoreCase(drug.getCode(), searchTerm) ||
-                containsIgnoreCase(drug.getSupplier(), searchTerm) || containsIgnoreCase(drug.getLocation(), searchTerm) || containsIgnoreCase(drug.getDateAdded(), searchTerm) ||
+                containsIgnoreCase(drug.getSupplier(), searchTerm) || containsIgnoreCase(drug.getDateAdded(), searchTerm) ||
                 containsDouble(drug.getPrice(), searchTerm) || containsInteger(drug.getQuantity(), searchTerm)) {
 
                 model.addRow(new Object[]{drug.getSupplier(), drug.getLocation(), drug.getDateAdded()});
@@ -110,7 +103,6 @@ public class SupplierForm extends javax.swing.JPanel {
         });
     }
 
-    
     @SuppressWarnings("unchecked")
     private void initComponents() {
 
@@ -189,6 +181,5 @@ public class SupplierForm extends javax.swing.JPanel {
     private com.raven.swing.Table table;
     private javax.swing.JTextField searchField;
     private javax.swing.JButton searchButton;
-    private javax.swing.JButton reloadButton;
     // End of variables declaration
 }

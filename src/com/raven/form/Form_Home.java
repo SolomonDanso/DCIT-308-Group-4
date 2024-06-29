@@ -63,6 +63,46 @@ public class Form_Home extends javax.swing.JPanel {
     
         // Fetch drugs from the database using getAllDrugs() from DatabaseHelper
         Map<String, Drug> drugs = DatabaseHelper.getAllDrugs();
+
+
+        /*
+        
+ drugs = [
+
+ {
+    code: 108dgh,
+    name: Ibuprofen,
+    price: 5,
+    quantity: 20,
+    supplier: Evans Chemist,
+    dateAdded: 2024-06-28,
+    location: Mampong
+    
+    
+    },
+
+    {
+    code: 108dgh,
+    name: Ibuprofen,
+    price: 5,
+    quantity: 20,
+    supplier: Evans Chemist,
+    dateAdded: 2024-06-28,
+    location: Mampong
+    
+    
+    },
+
+
+
+
+]
+
+
+        
+        
+        
+        */
     
         // Iterate over the drugs and add rows to the table model
         for (Drug drug : drugs.values()) {
@@ -74,7 +114,7 @@ public class Form_Home extends javax.swing.JPanel {
                 }
             });
             // Add a row to the table model
-            model.addRow(new Object[]{drug.getCode(), drug.getName(), drug.getPrice(), drug.getQuantity(), drug.getSupplier(), drug.getDateAdded(), deleteButton});
+            model.addRow(new Object[]{drug.getCode(), drug.getName(), drug.getPrice(), drug.getQuantity(), drug.getSupplier(), drug.getLocation(), drug.getDateAdded(), deleteButton});
         }
     }
     
@@ -91,8 +131,10 @@ public class Form_Home extends javax.swing.JPanel {
             Drug drug = entry.getValue();
             
             if (containsIgnoreCase(drug.getName(), searchTerm) || containsIgnoreCase(drug.getCode(), searchTerm) ||
-                containsIgnoreCase(drug.getSupplier(), searchTerm) || containsIgnoreCase(drug.getDateAdded(), searchTerm) ||
-                containsDouble(drug.getPrice(), searchTerm) || containsInteger(drug.getQuantity(), searchTerm)) {
+                containsIgnoreCase(drug.getSupplier(), searchTerm) ||containsIgnoreCase(drug.getLocation(), searchTerm) || containsIgnoreCase(drug.getDateAdded(), searchTerm) ||
+                containsDouble(drug.getPrice(), searchTerm) || containsInteger(drug.getQuantity(), searchTerm)
+                
+                ) {
                 
                 JButton deleteButton = new JButton("Delete");
                 deleteButton.addActionListener(new ActionListener() {
@@ -103,7 +145,7 @@ public class Form_Home extends javax.swing.JPanel {
                     }
                 });
                 
-                model.addRow(new Object[]{drug.getCode(), drug.getName(), drug.getPrice(), drug.getQuantity(), drug.getSupplier(), drug.getDateAdded(), deleteButton});
+                model.addRow(new Object[]{drug.getCode(), drug.getName(), drug.getPrice(), drug.getQuantity(), drug.getSupplier(),drug.getLocation(), drug.getDateAdded(), deleteButton});
                 found = true;
             }
         }
@@ -154,7 +196,7 @@ public class Form_Home extends javax.swing.JPanel {
         updateTable(); // Refresh the UI
     }
 
-    
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -200,11 +242,11 @@ public class Form_Home extends javax.swing.JPanel {
 
             },
             new String [] {
-                "Code", "Name", "Price", "Quantity", "Supplier", "Date Added", "Action"
+                "Code", "Name", "Price", "Quantity", "Supplier","Location", "Date Added", "Action"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, true
+                false, false, false, false, false, false, false, true
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {

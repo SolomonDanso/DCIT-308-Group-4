@@ -1,27 +1,26 @@
 package com.raven.model;
 
-public class Drug {
+import java.sql.Timestamp;
+
+public class Sales {
     private String code;
     private String name;
     private double price;
     private int quantity;
     private String supplier;
-    private String dateAdded;
-    private String location;
+    private Timestamp dateAdded;
+    private double amount;
 
-
-    //Constructor for Drugs 
-    public Drug(String code, String name, double price, int quantity, String supplier, String dateAdded,String location) {
+    // Constructor for Sales
+    public Sales(String code, String name, double price, int quantity, String supplier, Timestamp dateAdded, double amount) {
         this.code = code;
         this.name = name;
         this.price = price;
         this.quantity = quantity;
         this.supplier = supplier;
         this.dateAdded = dateAdded;
-        this.location = location;
+        this.amount = amount;
     }
-
-    
 
     // Getters and Setters
     public String getCode() {
@@ -64,21 +63,19 @@ public class Drug {
         this.supplier = supplier;
     }
 
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
-
-    public String getDateAdded() {
+    public Timestamp getDateAdded() {
         return dateAdded;
     }
 
-    public void setDateAdded(String dateAdded) {
+    public void setDateAdded(Timestamp dateAdded) {
         this.dateAdded = dateAdded;
     }
 
+    public double getAmount() {
+        return amount;
+    }
+
+    public void setAmount(double amount) {
+        this.amount = amount;
+    }
 }
