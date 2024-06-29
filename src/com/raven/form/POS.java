@@ -217,7 +217,7 @@ public class POS extends javax.swing.JPanel {
         }
     
         // Notify the user
-        JOptionPane.showMessageDialog(this, "Purchased successfully!");
+        //JOptionPane.showMessageDialog(this, "Purchased successfully!");
     }
     
 

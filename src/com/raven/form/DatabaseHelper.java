@@ -10,6 +10,9 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+
+import javax.swing.JOptionPane;
+
 import java.sql.Timestamp;
 import com.raven.model.Drug;
 import com.raven.model.Sales;
@@ -91,29 +94,60 @@ public class DatabaseHelper {
     }
 
 
-
-public static void insertSales(String code, String name, double price, int quantity, String customer, Timestamp dateAdded, double amount) {
-        String sql = "INSERT INTO Sales(code, name, price, quantity, customer, puchaseDate, amount) VALUES(?,?,?,?,?,?,?)";
-       
-        try (Connection conn = connect();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-             
-            pstmt.setString(1, code);
-            pstmt.setString(2, name);
-            pstmt.setDouble(3, price);
-            pstmt.setInt(4, quantity);
-            pstmt.setString(5, customer);
-            pstmt.setTimestamp(6, dateAdded);
-            pstmt.setDouble(7, amount);
+    public static void insertSales(String code, String name, double price, int quantity, String customer, Timestamp dateAdded, double amount) {
+        String selectSql = "SELECT quantity FROM Drugs WHERE code = ?";
+        String updateSql = "UPDATE Drugs SET quantity = ? WHERE code = ?";
+        String insertSql = "INSERT INTO Sales(code, name, price, quantity, customer, puchaseDate, amount) VALUES(?,?,?,?,?,?,?)";
     
-            pstmt.executeUpdate();
+        try (Connection conn = connect();
+             PreparedStatement selectStmt = conn.prepareStatement(selectSql);
+             PreparedStatement updateStmt = conn.prepareStatement(updateSql);
+             PreparedStatement insertStmt = conn.prepareStatement(insertSql)) {
+    
+            // Check the current stock of the drug
+            selectStmt.setString(1, code);
+            ResultSet rs = selectStmt.executeQuery();
+    
+            if (rs.next()) {
+                int currentQuantity = rs.getInt("quantity");
+    
+                // Check if there is enough stock
+                if (currentQuantity < quantity) {
+                    JOptionPane.showMessageDialog(null, "Insufficient stock for the drug!");
+                    return;
+                } else {
+                    // Update the drug quantity
+                    int newQuantity = currentQuantity - quantity;
+                    updateStmt.setInt(1, newQuantity);
+                    updateStmt.setString(2, code);
+                    updateStmt.executeUpdate();
+    
+                    // Insert the sale record
+                    insertStmt.setString(1, code);
+                    insertStmt.setString(2, name);
+                    insertStmt.setDouble(3, price);
+                    insertStmt.setInt(4, quantity);
+                    insertStmt.setString(5, customer);
+                    insertStmt.setTimestamp(6, dateAdded);
+                    insertStmt.setDouble(7, amount);
+    
+                    int rowsInserted = insertStmt.executeUpdate();
+    
+                    if (rowsInserted > 0) {
+                        JOptionPane.showMessageDialog(null, "Sale recorded successfully!");
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Failed to record the sale!");
+                    }
+                }
+            } else {
+                JOptionPane.showMessageDialog(null, "Drug not found in the inventory!");
+            }
+    
         } catch (SQLException e) {
             System.out.println("Insert error: " + e.getMessage());
         }
     }
     
-
-
 
 
 

@@ -250,7 +250,7 @@ public class AddDrugForm extends javax.swing.JPanel {
         }
     
         // Notify the user
-        JOptionPane.showMessageDialog(this, "Drug added successfully!");
+       // JOptionPane.showMessageDialog(this, "Drug added successfully!");
     }
     
 
