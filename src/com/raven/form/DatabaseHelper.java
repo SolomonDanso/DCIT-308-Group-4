@@ -12,6 +12,7 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.sql.Timestamp;
 import com.raven.model.Drug;
+import com.raven.model.Sales;
 
 public class DatabaseHelper {
 
@@ -212,6 +213,109 @@ drugs = [
 
         return drugs;
     }
+
+    public static Map<String, Sales> getAllSales() {
+        Map<String, Sales> sales = new HashMap<>();
+
+        String sql = "SELECT * FROM Sales ORDER BY puchaseDate ASC"; // For ascending order
+
+
+     
+        try (Connection conn = connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()) {
+
+            while (rs.next()) {
+                String code = rs.getString("code");
+                String name = rs.getString("name");
+                double price = rs.getDouble("price");
+                int quantity = rs.getInt("quantity");
+                String customer = rs.getString("customer");
+                Timestamp dateAdded = rs.getTimestamp("puchaseDate");
+                Double amount = rs.getDouble("amount");
+
+                Sales drug = new Sales(code, name, price, quantity, customer, dateAdded,amount);
+                sales.put(code, drug);
+            }
+        } catch (SQLException e) {
+            System.out.println("Fetch error: " + e.getMessage());
+        }
+
+        return sales;
+    }
+
+
+    public static int countTotalDrugs() {
+        String sql = "SELECT COUNT(DISTINCT name) FROM Drugs";
+    
+        try (Connection conn = connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()) {
+    
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            System.out.println("Fetch error: " + e.getMessage());
+        }
+    
+        return 0; // Return 0 if there was an error or no result
+    }
+
+    public static int countTotalSuppliers() {
+        String sql = "SELECT COUNT(DISTINCT supplier) FROM Drugs";
+    
+        try (Connection conn = connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()) {
+    
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            System.out.println("Fetch error: " + e.getMessage());
+        }
+    
+        return 0; // Return 0 if there was an error or no result
+    }
+
+    public static int countTotalCustomers() {
+        String sql = "SELECT COUNT(DISTINCT customer) FROM Sales;";
+    
+        try (Connection conn = connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()) {
+    
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            System.out.println("Fetch error: " + e.getMessage());
+        }
+    
+        return 0; // Return 0 if there was an error or no result
+    }
+
+
+    public static double sumAllDrugs() {
+        String sql = "SELECT SUM(amount) FROM Sales";
+    
+        try (Connection conn = connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()) {
+    
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            System.out.println("Fetch error: " + e.getMessage());
+        }
+    
+        return 0; // Return 0 if there was an error or no result
+    }
+    
+
+
 
     // Method to delete a drug from the database by its code
     public static void deleteDrug(String code) {

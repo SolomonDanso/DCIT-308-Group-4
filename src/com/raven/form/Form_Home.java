@@ -35,11 +35,27 @@ public class Form_Home extends javax.swing.JPanel {
         updateTable();
        // initSearch();
 
+       int countTotalDrugs = DatabaseHelper.countTotalDrugs();
+       String countTotalDrugsstr = String.valueOf(countTotalDrugs);
+
+       double sumAllSales = DatabaseHelper.sumAllDrugs();
+       String sumAllSalesstr = String.valueOf(sumAllSales);
+
+       int countTotalSales = DatabaseHelper.countTotalCustomers();
+       String countTotalSalesstr = String.valueOf(countTotalSales);
+
+       int countTotalSuppliers = DatabaseHelper.countTotalSuppliers();
+       String countTotalSuppliersstr = String.valueOf(countTotalSuppliers);
+
+
+
+
+
         // Additional UI initializations
-        card1.setData(new Model_Card(new ImageIcon(getClass().getResource("/com/raven/icon/stock.png")), "Total Drugs", "48", "Increased by 60%"));
-        card2.setData(new Model_Card(new ImageIcon(getClass().getResource("/com/raven/icon/profit.png")), "Total Profit", "GHC 15,000", "Year to Date"));
-        card3.setData(new Model_Card(new ImageIcon(getClass().getResource("/com/raven/icon/flag.png")), "Unique Customers", "520", "Increased by 70%"));
-        card4.setData(new Model_Card(new ImageIcon(getClass().getResource("/com/raven/icon/stock.png")), "Suppliers", "600", "Active Suppliers"));
+        card1.setData(new Model_Card(new ImageIcon(getClass().getResource("/com/raven/icon/stock.png")), "Total Drugs", countTotalDrugsstr, "All drugs available"));
+        card2.setData(new Model_Card(new ImageIcon(getClass().getResource("/com/raven/icon/profit.png")), "Total Sales", "GHC "+sumAllSalesstr, "Year to Date"));
+        card3.setData(new Model_Card(new ImageIcon(getClass().getResource("/com/raven/icon/flag.png")), "Unique Customers", countTotalSalesstr, "All total customers"));
+        card4.setData(new Model_Card(new ImageIcon(getClass().getResource("/com/raven/icon/stock.png")), "Suppliers",  countTotalSuppliersstr, "Active Suppliers"));
 
         spTable.setVerticalScrollBar(new ScrollBar());
         spTable.getVerticalScrollBar().setBackground(Color.WHITE);
@@ -63,7 +79,7 @@ public class Form_Home extends javax.swing.JPanel {
     
         // Fetch drugs from the database using getAllDrugs() from DatabaseHelper
         Map<String, Drug> drugs = DatabaseHelper.getAllDrugs();
-
+        
 
         /*
         
@@ -274,7 +290,7 @@ public class Form_Home extends javax.swing.JPanel {
                     searchDrug(text.trim());
                 }
             }
-        });
+        }); 
         reloadButton = new JButton("reload");
         reloadButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {

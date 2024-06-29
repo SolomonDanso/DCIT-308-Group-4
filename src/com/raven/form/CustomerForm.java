@@ -1,5 +1,6 @@
 package com.raven.form;
 
+import com.raven.model.Drug;
 import com.raven.model.Sales;
 import com.raven.swing.ScrollBar;
 import java.awt.Color;
@@ -18,15 +19,18 @@ import javax.swing.JOptionPane;
 import javax.swing.border.EmptyBorder;
 import java.text.SimpleDateFormat;
 
-public class SalesForm extends javax.swing.JPanel {
+
+
+
+
+public class CustomerForm extends javax.swing.JPanel {
 
     private TableRowSorter<DefaultTableModel> rowSorter;
 
-    public SalesForm() {
+    public CustomerForm() {
         initComponents();
         updateTable();
         initSearch();
-        initReload();
     }
 
     private void updateTable() {
@@ -40,21 +44,13 @@ public class SalesForm extends javax.swing.JPanel {
         DefaultTableModel model = (DefaultTableModel) table.getModel();
         model.setRowCount(0); // Clear existing rows
 
-        // Fetch sales from the database using getAllSales() from DatabaseHelper
+        // Fetch drugs from the database using getAllDrugs() from DatabaseHelper
         Map<String, Sales> sales = DatabaseHelper.getAllSales();
 
-        // Iterate over the sales and add rows to the table model
+        // Iterate over the drugs and add rows to the table model
         for (Sales sale : sales.values()) {
             // Add a row to the table model
-            model.addRow(new Object[]{
-                sale.getCode(), 
-                sale.getName(),
-                sale.getPrice(),
-                sale.getQuantity(),
-                sale.getAmount(),
-                sale.getSupplier(),
-                sale.getDateAdded(),
-            });
+            model.addRow(new Object[]{sale.getSupplier(), sale.getName(),sale.getAmount(), sale.getDateAdded()});
         }
     }
 
@@ -73,25 +69,17 @@ public class SalesForm extends javax.swing.JPanel {
             // Convert Timestamp to String for comparison
             String dateAddedStr = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(sale.getDateAdded());
     
-            if (containsIgnoreCase(sale.getName(), searchTerm) ||containsDouble(sale.getAmount(), searchTerm) || containsIgnoreCase(sale.getCode(), searchTerm) ||
-                containsIgnoreCase(sale.getSupplier(), searchTerm) || containsIgnoreCase(dateAddedStr, searchTerm) ||
-                containsDouble(sale.getPrice(), searchTerm) || containsInteger(sale.getQuantity(), searchTerm)) {
+            if (containsIgnoreCase(sale.getName(), searchTerm)  || containsDouble(sale.getAmount(), searchTerm) ||
+                containsIgnoreCase(sale.getSupplier(), searchTerm) || containsIgnoreCase(dateAddedStr, searchTerm) ) {
     
-                model.addRow(new Object[]{
-                    sale.getCode(), 
-                    sale.getName(),
-                    sale.getPrice(),
-                    sale.getQuantity(),
-                    sale.getAmount(),
-                    sale.getSupplier(),
-                    dateAddedStr,
-                });
+                    model.addRow(new Object[]{sale.getSupplier(), sale.getName(),sale.getAmount(), sale.getDateAdded()});
+
                 found = true;
             }
         }
     
         if (!found) {
-            JOptionPane.showMessageDialog(this, "No sales found matching the search criteria.", "Search Results", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this, "No customer found matching the search criteria.", "Search Results", JOptionPane.INFORMATION_MESSAGE);
             updateTable();
         }
     }
@@ -148,13 +136,13 @@ public class SalesForm extends javax.swing.JPanel {
         table = new com.raven.swing.Table();
         searchField = new javax.swing.JTextField();
         searchButton = new javax.swing.JButton();
-        reloadButton = new javax.swing.JButton(); // Add reload button
+        reloadButton = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(255, 255, 255));
 
         jLabel1.setFont(new java.awt.Font("sansserif", 1, 18)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(127, 127, 127));
-        jLabel1.setText("Purchase History");
+        jLabel1.setText("List of all Customers");
 
         spTable.setBorder(null);
 
@@ -163,11 +151,11 @@ public class SalesForm extends javax.swing.JPanel {
 
             },
             new String [] {
-                "Code", "Drug Name", "Unit Price", "Quantity", "Amount", "Customer", "Date Added"
+                "Customer", "Drug","Amount", "Purchased Date"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false
+                false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -177,7 +165,7 @@ public class SalesForm extends javax.swing.JPanel {
         spTable.setViewportView(table);
 
         searchButton.setText("Search");
-        reloadButton.setText("Reload"); // Set text for reload button
+        reloadButton.setText("Reload");
 
         // Add components with margin
         this.setBorder(new EmptyBorder(20, 20, 20, 20));
@@ -187,14 +175,17 @@ public class SalesForm extends javax.swing.JPanel {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(searchField, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(searchButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(reloadButton)) // Add reload button to layout
-            .addComponent(spTable, javax.swing.GroupLayout.DEFAULT_SIZE, 889, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(searchField, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(searchButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(reloadButton))
+                    .addComponent(spTable, javax.swing.GroupLayout.DEFAULT_SIZE, 889, Short.MAX_VALUE))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -203,15 +194,16 @@ public class SalesForm extends javax.swing.JPanel {
                     .addComponent(jLabel1)
                     .addComponent(searchField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(searchButton)
-                    .addComponent(reloadButton)) // Add reload button to layout
+                    .addComponent(reloadButton))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(spTable, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE) // Adjusted height
                 .addGap(20, 20, 20))
         );
 
         // Set the preferred size to make the height cover the screen
-        // this.setPreferredSize(new Dimension(1200, 800)); // Adjust the height as needed
+       // this.setPreferredSize(new Dimension(1200, 800)); // Adjust the height as needed
 
+        initReload();
     }
 
     // Variables declaration - do not modify
@@ -220,6 +212,6 @@ public class SalesForm extends javax.swing.JPanel {
     private com.raven.swing.Table table;
     private javax.swing.JTextField searchField;
     private javax.swing.JButton searchButton;
-    private javax.swing.JButton reloadButton; // Declare reload button
+    private javax.swing.JButton reloadButton;
     // End of variables declaration
 }

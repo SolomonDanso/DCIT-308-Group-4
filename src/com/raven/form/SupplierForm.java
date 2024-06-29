@@ -110,7 +110,14 @@ public class SupplierForm extends javax.swing.JPanel {
         });
     }
 
-    
+    private void initReload() {
+        reloadButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                updateTable();
+            }
+        });
+    }
+
     @SuppressWarnings("unchecked")
     private void initComponents() {
 
@@ -119,6 +126,7 @@ public class SupplierForm extends javax.swing.JPanel {
         table = new com.raven.swing.Table();
         searchField = new javax.swing.JTextField();
         searchButton = new javax.swing.JButton();
+        reloadButton = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(255, 255, 255));
 
@@ -147,6 +155,7 @@ public class SupplierForm extends javax.swing.JPanel {
         spTable.setViewportView(table);
 
         searchButton.setText("Search");
+        reloadButton.setText("Reload");
 
         // Add components with margin
         this.setBorder(new EmptyBorder(20, 20, 20, 20));
@@ -162,7 +171,9 @@ public class SupplierForm extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(searchField, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(searchButton))
+                        .addComponent(searchButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(reloadButton))
                     .addComponent(spTable, javax.swing.GroupLayout.DEFAULT_SIZE, 889, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -172,7 +183,8 @@ public class SupplierForm extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(searchField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(searchButton))
+                    .addComponent(searchButton)
+                    .addComponent(reloadButton))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(spTable, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE) // Adjusted height
                 .addGap(20, 20, 20))
@@ -180,7 +192,8 @@ public class SupplierForm extends javax.swing.JPanel {
 
         // Set the preferred size to make the height cover the screen
        // this.setPreferredSize(new Dimension(1200, 800)); // Adjust the height as needed
-   
+
+        initReload();
     }
 
     // Variables declaration - do not modify
