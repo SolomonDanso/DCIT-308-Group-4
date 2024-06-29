@@ -4,6 +4,8 @@ import com.raven.model.Model_Card;
 import com.raven.model.Drug;
 import com.raven.model.DrugManager;
 import com.raven.swing.ScrollBar;
+import com.raven.util.MergeSort;
+
 import java.awt.*;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -13,6 +15,8 @@ import javax.swing.JTextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Map;
+import java.util.Arrays;
+
 
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
@@ -134,6 +138,7 @@ public class Form_Home extends javax.swing.JPanel {
         }
     }
     
+    
 
     private void searchDrug(String searchTerm) {
         System.out.println("Search Term: " + searchTerm); // Print searchTerm for debugging
@@ -211,6 +216,46 @@ public class Form_Home extends javax.swing.JPanel {
 
         updateTable(); // Refresh the UI
     }
+
+
+
+
+// Method to sort the JTable by a specific column using mergesort algorithm
+private void sortTable() {
+    // Get the table model and its data
+    DefaultTableModel model = (DefaultTableModel) table.getModel();
+    Object[][] data = getDataFromTableModel(model);
+    
+    // Perform mergesort on the data array, sorting by the specified columnIndex
+    MergeSort.mergeSort(data, 1); // Sorting by the second column (adjust as needed)
+    
+    // Update the table model with the sorted data
+    updateTableModel(model, data);
+}
+
+// Method to retrieve data from the table model and convert it into a 2D array
+private Object[][] getDataFromTableModel(DefaultTableModel model) {
+    // Initialize a 2D array to hold the table data
+    Object[][] data = new Object[model.getRowCount()][model.getColumnCount()];
+    
+    // Populate the data array with values from the table model
+    for (int i = 0; i < model.getRowCount(); i++) {
+        for (int j = 0; j < model.getColumnCount(); j++) {
+            data[i][j] = model.getValueAt(i, j);
+        }
+    }
+    return data; // Return the populated 2D array
+}
+
+// Method to update the table model with new data
+private void updateTableModel(DefaultTableModel model, Object[][] data) {
+    model.setRowCount(0); // Clear existing rows
+    
+    // Stream through the 2D array and add each row to the table model
+    Arrays.stream(data).forEach(row -> model.addRow(row));
+}
+
+
 
 
     @SuppressWarnings("unchecked")
@@ -297,9 +342,21 @@ public class Form_Home extends javax.swing.JPanel {
                updateTable();
             }
         });
+
+        JButton sortButton = new JButton("Sort");
+        sortButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                sortTable();
+            }
+        });
+
+
+
         searchPanel.add(searchField);
         searchPanel.add(searchButton);
         searchPanel.add(reloadButton);
+        searchPanel.add(sortButton);
 
         javax.swing.GroupLayout panelBorder1Layout = new javax.swing.GroupLayout(panelBorder1);
         panelBorder1.setLayout(panelBorder1Layout);
