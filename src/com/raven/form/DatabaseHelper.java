@@ -84,6 +84,7 @@ public class DatabaseHelper {
 
    //
    pstmt.executeUpdate();
+   JOptionPane.showMessageDialog(null, "Drug added successfully!");
 } catch (SQLException e) {
    System.out.println("Insert error: " + e.getMessage());
 }

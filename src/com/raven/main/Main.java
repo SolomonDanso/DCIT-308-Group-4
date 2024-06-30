@@ -8,6 +8,7 @@ import com.raven.form.Form_2;
 import com.raven.form.Form_3;
 import com.raven.form.Form_Home;
 import com.raven.form.POS;
+
 import com.raven.form.SalesForm;
 import com.raven.form.SupplierForm;
 
@@ -23,15 +24,13 @@ public class Main extends javax.swing.JFrame {
      * Creates new form Main
      */
     private Form_Home home;
-    private Form_1 form1;
-    private Form_2 form2;
-    private Form_3 form3;
+
     private SupplierForm supplierForm;
     private SalesForm salesForm;
     private AddDrugForm addDrugForm;
     private POS pos;
     private CustomerForm customerForm;
-
+   
     public Main() {
         // Set the frame to undecorated before making it visible
         //setUndecorated(true);
@@ -39,14 +38,13 @@ public class Main extends javax.swing.JFrame {
         initComponents();
 
         home = new Form_Home();
-        form1 = new Form_1();
-        form2 = new Form_2();
-        form3 = new Form_3();
+ 
         supplierForm = new SupplierForm();
         salesForm = new SalesForm();
         addDrugForm = new AddDrugForm();
         pos = new POS();
         customerForm = new CustomerForm();
+       
 
         menu.initMoving(Main.this);
         menu.addEventMenuSelected(new EventMenuSelected() {
@@ -67,6 +65,8 @@ public class Main extends javax.swing.JFrame {
                 else if (index == 5) {
                     setForm(pos);
                 }
+               
+                
             }
         });
         //  set when system open start with home form

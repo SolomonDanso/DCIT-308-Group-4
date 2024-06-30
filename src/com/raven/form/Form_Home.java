@@ -32,6 +32,13 @@ public class Form_Home extends javax.swing.JPanel {
     private JButton reloadButton;
     private JPanel searchPanel;
 
+
+
+    String countTotalDrugsstr;
+    String sumAllSalesstr;
+    String countTotalSalesstr;
+    String countTotalSuppliersstr;
+
     public Form_Home() {
         initComponents();
         drugManager = new DrugManager();
@@ -39,17 +46,17 @@ public class Form_Home extends javax.swing.JPanel {
         updateTable();
        // initSearch();
 
-       int countTotalDrugs = DatabaseHelper.countTotalDrugs();
-       String countTotalDrugsstr = String.valueOf(countTotalDrugs);
+      
+      countTotalDrugsstr = String.valueOf(DatabaseHelper.countTotalDrugs());
 
-       double sumAllSales = DatabaseHelper.sumAllDrugs();
-       String sumAllSalesstr = String.valueOf(sumAllSales);
 
-       int countTotalSales = DatabaseHelper.countTotalCustomers();
-       String countTotalSalesstr = String.valueOf(countTotalSales);
+      sumAllSalesstr = String.valueOf(DatabaseHelper.sumAllDrugs());
 
-       int countTotalSuppliers = DatabaseHelper.countTotalSuppliers();
-       String countTotalSuppliersstr = String.valueOf(countTotalSuppliers);
+      
+       countTotalSalesstr = String.valueOf(DatabaseHelper.countTotalCustomers());
+
+
+      countTotalSuppliersstr = String.valueOf(DatabaseHelper.countTotalSuppliers());
 
 
 
@@ -340,6 +347,21 @@ private void updateTableModel(DefaultTableModel model, Object[][] data) {
         reloadButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                updateTable();
+               initComponents();
+               
+    // countTotalDrugsstr = String.valueOf(DatabaseHelper.countTotalDrugs());
+
+
+    //   sumAllSalesstr = String.valueOf(DatabaseHelper.sumAllDrugs());
+
+      
+    //    countTotalSalesstr = String.valueOf(DatabaseHelper.countTotalCustomers());
+
+
+    //   countTotalSuppliersstr = String.valueOf(DatabaseHelper.countTotalSuppliers());
+
+
+
             }
         });
 
