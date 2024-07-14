@@ -10,7 +10,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/src/com/raven/sql/enu/jars/mssql-jdbc-12.6.3.jre11.jar!/" />
+          <root url="jar://$MODULE_DIR$/src/com/group4/sql/enu/jars/mssql-jdbc-12.6.3.jre11.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

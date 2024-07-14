@@ -5,7 +5,7 @@
 
     <!-- Define path to external libraries -->
     <path id="libs.classpath">
-        <pathelement location="/Users/glydetek/Desktop/DCIT-308-Group-4/src/com/raven/sql/enu/jars/mssql-jdbc-12.6.3.jre11.jar"/>
+        <pathelement location="/Users/glydetek/Desktop/DCIT-308-Group-4/src/com/group4/sql/enu/jars/mssql-jdbc-12.6.3.jre11.jar"/>
         <!-- Add any other libraries you may need -->
     </path>
 
@@ -21,7 +21,7 @@
 
     <!-- Override the run target to include the external libraries -->
     <target name="run" depends="ui-dashboard-001-impl.jar">
-        <java classname="com.raven.main.Main" classpath="bin:${libs.classpath}">
+        <java classname="com.group4.main.Main" classpath="bin:${libs.classpath}">
             <!-- Adjust as necessary for your application -->
         </java>
     </target>
