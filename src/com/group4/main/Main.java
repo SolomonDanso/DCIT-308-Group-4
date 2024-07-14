@@ -8,7 +8,7 @@ import com.group4.form.Form_2;
 import com.group4.form.Form_3;
 import com.group4.form.Form_Home;
 import com.group4.form.POS;
-
+import com.group4.form.ReportForm;
 import com.group4.form.SalesForm;
 import com.group4.form.SupplierForm;
 
@@ -30,6 +30,7 @@ public class Main extends javax.swing.JFrame {
     private AddDrugForm addDrugForm;
     private POS pos;
     private CustomerForm customerForm;
+    private ReportForm reportForm;
    
     public Main() {
         // Set the frame to undecorated before making it visible
@@ -44,6 +45,7 @@ public class Main extends javax.swing.JFrame {
         addDrugForm = new AddDrugForm();
         pos = new POS();
         customerForm = new CustomerForm();
+        reportForm = new ReportForm();
        
 
         menu.initMoving(Main.this);
@@ -64,6 +66,9 @@ public class Main extends javax.swing.JFrame {
                 }
                 else if (index == 5) {
                     setForm(pos);
+                }
+                else if (index == 6) {
+                    setForm(reportForm);
                 }
                
                 
